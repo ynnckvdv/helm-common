@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.appName }}
-        image: {{ .Values.image }}:{{ .Values.imageTag }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         resources:
           limits:
             memory: "256Mi"
