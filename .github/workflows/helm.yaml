@@ -13,11 +13,27 @@ jobs:
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
           sudo apt-get update --yes
           sudo apt-get install helm --yes
-      - name: Disable SSL verify (Temporary Fix)
-        run: git config --global http.sslVerify false
+
       - name: Check out repository code
         uses: actions/checkout@v4
+
+     # - name: Add helm-common repo
+     #   run: helm repo add --username ynnckvdv --password ${{ secrets.PASSWORD }} helm-common https://gitea.swell.casa:3000/api/packages/ynnckvdv/helm --insecure-skip-tls-verify
+
+    #  - name: Helm Repo Update
+    #    run: helm repo update
+#
+    #  - name: Helm Dependency Update
+    #    run: helm dependency update
+#
+    #  - name: Helm Dependency Build
+    #    run: helm dependency build .
+
       - name: Helm Package to create .tgz file
         run: helm package .
+        
+      - name: Helm Registry Login
+        run: helm registry login ghcr.io -u ynnckvdv -p ${{ secrets.HELM_REGISTRY_TOKEN }}
+
       - name: Push Helm Chart to packages
-        run: curl --insecure --user ynnckvdv:${{ secrets.ACTION_TOKEN }} -X POST --upload-file *.tgz https://gitea.swell.casa:3000/api/packages/ynnckvdv/helm/api/charts -v
+        run: helm push *.tgz oci://ghcr.io/ynnckvdv
