@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-deploy
+  namespace: {{ .Values.appName }}-namespace
+spec:
+  replicas: 1 # Sonarr is not HA
+  selector:
+    matchLabels: # What pods does the deployment 
+      app: {{ .Values.appName }}
+  template: # Describes the pods
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+    spec:
+      containers:
+      - name: {{ .Values.appName }}
+        image: {{ .Values.image }}:{{ .Values.imageTag }}
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: {{ .Values.port }}
