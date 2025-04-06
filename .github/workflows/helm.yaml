@@ -17,21 +17,21 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-     # - name: Add helm-common repo
-     #   run: helm repo add --username ynnckvdv --password ${{ secrets.PASSWORD }} helm-common https://gitea.swell.casa:3000/api/packages/ynnckvdv/helm --insecure-skip-tls-verify
+      - name: Add helm-common repo
+        run: helm repo add helm-common oci://ghcr.io/ynnckvdv/helm-common
 
-    #  - name: Helm Repo Update
-    #    run: helm repo update
-#
-    #  - name: Helm Dependency Update
-    #    run: helm dependency update
-#
-    #  - name: Helm Dependency Build
-    #    run: helm dependency build .
+      - name: Helm Repo Update
+        run: helm repo Update
+
+      - name: Helm Dependency Update
+        run: helm dependency update
+
+      - name: Helm Dependency Build
+        run: helm dependency build .
 
       - name: Helm Package to create .tgz file
         run: helm package .
-        
+
       - name: Helm Registry Login
         run: helm registry login ghcr.io -u ynnckvdv -p ${{ secrets.HELM_REGISTRY_TOKEN }}
 
